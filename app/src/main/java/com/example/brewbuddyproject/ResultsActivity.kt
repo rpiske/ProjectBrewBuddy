@@ -45,18 +45,30 @@ class ResultsActivity : AppCompatActivity() {
         val breweryLocationsAPI = retrofitBuilder.create(BreweryService::class.java)
 
         breweryLocationsAPI.getBreweryByZip(zipCode, 50).enqueue(object : Callback<List<Brewery>?> {
+
+            // If we get a response from the API
             override fun onResponse(call: Call<List<Brewery>?>, response: Response<List<Brewery>?>) {
                 Log.d(TAG, "onResponse: $response")
+
+                // Body contains a string of the data pulled from the API, the data is in the order
+                // of the Brewery's header constructor, so the data is automatically stored with the
+                // appropriate variables
                 val body = response.body()
                 if(body == null) {
                     Log.d(TAG, "Valid response was not received")
                     return
                 }
+
+
                 breweryLocations.addAll(body)
+
+
                 myRecycleAdapter.notifyDataSetChanged()
-                //Log.d(TAG, "a: ${breweryLocations[0].name}")
+                //Log.d(TAG, "a: ${breweryLocations[0].street}")
                 //Log.d(TAG, "b: ${breweryLocations[1].name}")
                 //Log.d(TAG, "c: ${breweryLocations[2].name}")
+
+
             }
 
             override fun onFailure(call: Call<List<Brewery>?>, t: Throwable) {
