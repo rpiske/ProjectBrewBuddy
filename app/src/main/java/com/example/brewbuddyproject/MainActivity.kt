@@ -30,5 +30,6 @@ class MainActivity : AppCompatActivity() {
             myIntent.putExtra("zipCode", zipCode)
             startActivity(myIntent)
         }
+        //RICH ADDING TEST COMMENT FOR TEST PUSH
     }
 }
