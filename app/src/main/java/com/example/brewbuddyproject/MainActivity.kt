@@ -31,5 +31,6 @@ class MainActivity : AppCompatActivity() {
             startActivity(myIntent)
         }
         //RICH ADDING TEST COMMENT FOR TEST PUSH
+        //Now these changes should be in Rich-Update
     }
 }
