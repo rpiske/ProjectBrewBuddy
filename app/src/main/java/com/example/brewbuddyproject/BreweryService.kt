@@ -16,6 +16,4 @@ interface BreweryService {
     @GET("/v1/breweries")
     fun getBreweryByZip(@Query("by_postal") zip: String,
                         @Query("per_page") numberResults: Int): Call<List<Brewery>>
-
-    ///test test test
 }
