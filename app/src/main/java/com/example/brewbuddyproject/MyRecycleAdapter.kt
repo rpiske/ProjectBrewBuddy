@@ -1,9 +1,9 @@
 package com.example.brewbuddyproject
 
-import android.content.ContentValues.TAG
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.OnLongClickListener
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
@@ -25,6 +25,12 @@ class MyRecycleAdapter(val breweryLocations: ArrayList<Brewery>): RecyclerView.A
             itemView.setOnClickListener {
                 Toast.makeText(itemView.context, "You clicked on ${breweryLocations[adapterPosition].name}", Toast.LENGTH_SHORT).show()
             }
+
+
+            itemView.setOnLongClickListener(OnLongClickListener {
+                Toast.makeText(itemView.context, "You LONG clicked on ${breweryLocations[adapterPosition].name}", Toast.LENGTH_SHORT).show()
+                true // returning true instead of false, works for me
+            })
         }
     }
 
