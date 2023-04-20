@@ -31,4 +31,6 @@ class MainActivity : AppCompatActivity() {
             startActivity(myIntent)
         }
     }
+
+    // FINAL TEST
 }
