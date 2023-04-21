@@ -3,10 +3,14 @@ package com.example.brewbuddyproject
 import android.content.ContentValues.TAG
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.firestore.FirebaseFirestore
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -14,6 +18,8 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 class ResultsActivity : AppCompatActivity() {
+
+    private lateinit var fireBasedb: FirebaseFirestore
 
     val BASE_URL = "https://api.openbrewerydb.org/v1/"
     val breweryLocations = ArrayList<Brewery>()
@@ -25,6 +31,9 @@ class ResultsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_results)
+
+        // Get the Cloud firestore Instance
+        fireBasedb = FirebaseFirestore.getInstance()
 
         val zipCode = intent.getSerializableExtra("zipCode") as String
         //breweryLocations.add(sampleSpot)
@@ -63,5 +72,122 @@ class ResultsActivity : AppCompatActivity() {
                 Log.d(TAG, "onResponse: $t")
             }
         })
+    } // End of OnCreate Method
+
+
+
+    // Call the brewery function
+    fun addBreweryButton(view: View){
+        addBrewery(breweryLocations[0])
     }
+
+
+    // ************CURRENTLY THIS IS HARDCODED JUST FOR TESTING PURPOSES*******
+
+    // Passing a Brewery and adding it to the database
+    private fun addBrewery(passedBrewery : Brewery) : Unit{
+
+        // Getting an instance of our collection
+        val breweryDatabase = fireBasedb.collection("breweries")
+
+        // Getting the auto generated id for the document that we want to create
+        val documentId = breweryDatabase.document().id
+
+        // Adding the data
+        breweryDatabase.document(documentId).set(passedBrewery)
+
+    }
+
+
+    fun deleteBreweryButton(view: View){
+
+        deleteBrewery(breweryLocations[0])
+    }
+
+    // Deleting a Brewery from the database
+    private fun deleteBrewery(passedBrewery: Brewery) : Unit {
+
+        // We are using the Breweries name as the ID
+        val idName = passedBrewery.name
+
+
+        if(idName.isNotEmpty()) {
+
+
+            //Execute a query to get a reference to the document to be deleted
+            // and then loop over the matching documents and delete each document based on reference
+            fireBasedb.collection("breweries")
+                .whereEqualTo("name", idName)
+                .get()
+                .addOnSuccessListener { documents ->
+
+                    for (document in documents) {
+
+                        if (document != null) {
+
+                            document.reference.delete()
+                            break
+                        } else
+                            Log.d(TAG, "No such document")
+                    }
+                }
+        }
+        else{
+                showToast("There are no breweries to delete")
+        }
+    }
+
+    // View a record of all the Breweries
+    fun viewFavorites(view: View){
+        viewAllBreweries(breweryLocations[0])
+    }
+
+    private fun viewAllBreweries(brewery: Brewery){
+
+
+        // Retrieve data
+        fireBasedb.collection("breweries")
+            .orderBy("name")
+            .get()
+            .addOnSuccessListener { documents ->
+
+                val buffer = StringBuffer()
+
+                for(document in documents){
+                    Log.d(TAG, "${document.id} => ${document.data}")
+
+                    buffer.append("Name : ${document.get("name")}" + "\n")
+                    buffer.append("Street : ${document.get("street")}" + "\n")
+                    buffer.append("City : ${document.get("city")}" + "\n")
+                    buffer.append("State : ${document.get("state")}" + "\n")
+                    buffer.append("Zip : ${document.get("zip")}" + "\n")
+                    buffer.append("Phone : ${document.get("phone")}" + "\n")
+                    buffer.append("Website : ${document.get("website_url")}" + "\n\n")
+
+                }
+                // Show the listing of breweries
+                showDialog("Brewery Listing: ", buffer.toString())
+            }
+            .addOnFailureListener{
+                Log.d(TAG, "Error getting documents")
+                showDialog("Error", "Error getting breweries")
+            }
+    }
+
+    private fun showToast(text: String){
+        Toast.makeText(this, text, Toast.LENGTH_LONG).show()
+    }
+
+    private fun showDialog(title : String,Message : String){
+        val builder = AlertDialog.Builder(this)
+        builder.setCancelable(true)
+        builder.setTitle(title)
+        builder.setMessage(Message)
+        builder.show()
+    }
+
 }
+
+
+
+// 06416 CROMWELL
