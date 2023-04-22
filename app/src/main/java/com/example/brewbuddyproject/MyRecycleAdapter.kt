@@ -1,5 +1,6 @@
 package com.example.brewbuddyproject
 
+import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -12,7 +13,10 @@ import androidx.recyclerview.widget.RecyclerView
 class MyRecycleAdapter(val breweryLocations: ArrayList<Brewery>): RecyclerView.Adapter<MyRecycleAdapter.MyViewHolder>() {
 
     var counter = 1
+    var currentSelection: Int = -1
+
     private val TAG = "MyRecycleAdapter"
+
 
     inner class MyViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         val brewName = itemView.findViewById<TextView>(R.id.brew_name)
@@ -23,16 +27,18 @@ class MyRecycleAdapter(val breweryLocations: ArrayList<Brewery>): RecyclerView.A
 
         init {
             itemView.setOnClickListener {
-                Toast.makeText(itemView.context, "You clicked on ${breweryLocations[adapterPosition].name}", Toast.LENGTH_SHORT).show()
+                // Store the current position of the brewery that is selected
+               currentSelection =  adapterPosition
+
+               Toast.makeText(itemView.context, "You clicked on ${breweryLocations[adapterPosition].name}", Toast.LENGTH_SHORT).show()
+
             }
 
-
-            itemView.setOnLongClickListener(OnLongClickListener {
-                Toast.makeText(itemView.context, "You LONG clicked on ${breweryLocations[adapterPosition].name}", Toast.LENGTH_SHORT).show()
-                true // returning true instead of false, works for me
-            })
         }
+
     }
+
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -52,7 +58,12 @@ class MyRecycleAdapter(val breweryLocations: ArrayList<Brewery>): RecyclerView.A
         holder.brewCity.text = "${breweryLocations[position].city}, ${breweryLocations[position].state} ${breweryLocations[position].zip}"
         holder.brewPhone.text = breweryLocations[position].phone
         holder.brewWebsite.text = breweryLocations[position].website_url
+
+
+
     }
-
-
+    // Return the name of the current brewery that is selected
+    fun getCurrentBrewerySelection() : Int {
+        return currentSelection
+    }
 }

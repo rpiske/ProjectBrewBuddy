@@ -19,37 +19,24 @@
         android:id="@+id/addBreweryButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="36dp"
+        android:layout_marginStart="32dp"
         android:layout_marginBottom="62dp"
         android:onClick="addBreweryButton"
-        android:text="Add Brewery"
+        android:text="Add To Favorites"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/recycler_view"
-        app:layout_constraintVertical_bias="0.75" />
+        app:layout_constraintVertical_bias="0.723" />
 
     <Button
-        android:id="@+id/deleteBreweryButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="32dp"
-        android:layout_marginBottom="62dp"
-        android:onClick="deleteBreweryButton"
-        android:text="Delete Brewery"
+        android:id="@+id/backButton"
+        android:layout_width="120dp"
+        android:layout_height="54dp"
+        android:layout_marginEnd="60dp"
+        android:layout_marginBottom="56dp"
+        android:onClick="backButton"
+        android:text="Back"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/recycler_view"
-        app:layout_constraintVertical_bias="0.75" />
-
-    <Button
-        android:id="@+id/viewBreweryButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="120dp"
-        android:layout_marginBottom="4dp"
-        android:onClick="viewFavorites"
-        android:text="View Favorites"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
