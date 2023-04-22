@@ -1,19 +1,21 @@
 package com.example.brewbuddyproject
 
 import android.content.Context
+import android.graphics.Color
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnLongClickListener
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 
-class MyRecycleAdapter(val breweryLocations: ArrayList<Brewery>): RecyclerView.Adapter<MyRecycleAdapter.MyViewHolder>() {
+class MyRecycleAdapter(private val breweryLocations: ArrayList<Brewery>): RecyclerView.Adapter<MyRecycleAdapter.MyViewHolder>() {
 
     var counter = 1
-    var currentSelection: Int = -1
+    var selectedItemPosition: Int = -1 // -1 means that nothing was selected
 
     private val TAG = "MyRecycleAdapter"
 
@@ -25,16 +27,6 @@ class MyRecycleAdapter(val breweryLocations: ArrayList<Brewery>): RecyclerView.A
         val brewPhone = itemView.findViewById<TextView>(R.id.brew_phone)
         val brewWebsite = itemView.findViewById<TextView>(R.id.brew_website)
 
-        init {
-            itemView.setOnClickListener {
-                // Store the current position of the brewery that is selected
-               currentSelection =  adapterPosition
-
-               Toast.makeText(itemView.context, "You clicked on ${breweryLocations[adapterPosition].name}", Toast.LENGTH_SHORT).show()
-
-            }
-
-        }
 
     }
 
@@ -44,7 +36,11 @@ class MyRecycleAdapter(val breweryLocations: ArrayList<Brewery>): RecyclerView.A
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.row_item, parent, false)
         Log.d(TAG, "onCreateViewHolder: ${counter++}")
+
+
         return MyViewHolder(view)
+
+
     }
 
     override fun getItemCount(): Int {
@@ -60,10 +56,28 @@ class MyRecycleAdapter(val breweryLocations: ArrayList<Brewery>): RecyclerView.A
         holder.brewWebsite.text = breweryLocations[position].website_url
 
 
+        holder.itemView.setOnClickListener {
+            selectedItemPosition = position
+            notifyDataSetChanged()
 
+        }
+
+        if(selectedItemPosition == position){
+            // Change Current Selection to Orange
+            holder.itemView.setBackgroundColor(Color.parseColor("#DC746C"))
+
+        }
+        else
+        {
+            // All other items will be changed back to a default of White
+            holder.itemView.setBackgroundColor(Color.parseColor("#FFFFFF"))
+
+        }
     }
     // Return the name of the current brewery that is selected
     fun getCurrentBrewerySelection() : Int {
-        return currentSelection
+        return selectedItemPosition
     }
+
+
 }

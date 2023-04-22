@@ -60,7 +60,7 @@ class DeleteBreweryActivity : AppCompatActivity() {
                         if (document != null) {
                             Log.d(TAG, "${document.id} => ${document.data}")
                             document.reference.delete()
-                            showDialog("Success", "Brewery Deleted")
+                            showDialog("Success", "${document.get("name")}Brewery has been Deleted")
                             break
                         } else
                             Log.d(TAG, "No such document")

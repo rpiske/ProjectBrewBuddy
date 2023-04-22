@@ -44,11 +44,8 @@ class MainActivity : AppCompatActivity() {
             }
             else
                 showDialog("Error", "Please enter correct zipcode")
-
-
-
         }
-    }
+    }      
 
     // Open the new Activity so the user can delete a brewery
     fun deleteButton(view: View){

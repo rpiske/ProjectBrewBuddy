@@ -116,7 +116,7 @@ class ResultsActivity : AppCompatActivity() {
         // Adding the data
         breweryDatabase.document(documentId).set(passedBrewery)
 
-        showDialog("Success", "Brewery has been added.")
+        showDialog("Success", "${passedBrewery.name} Brewery has been added.")
 
     }
 
