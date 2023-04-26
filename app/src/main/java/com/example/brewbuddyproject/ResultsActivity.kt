@@ -72,24 +72,6 @@ class ResultsActivity : AppCompatActivity(), OnMapReadyCallback {
         recyclerView.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
 
         pingBreweryAPI(zipCode)
-
-
-
-
-    }
-
-    fun updatePins() {
-        //add pins to Maps
-
-        var coordinates = LatLng(41.7659,-72.681)
-        /*for (brewery in breweryLocations) {
-            //log these lat/lons and see what we got
-            coordinates = LatLng(brewery.latitude.toDouble(), brewery.longitude.toDouble())
-            mMap.addMarker(MarkerOptions().position(coordinates).title("${brewery.name}"))
-        }*/
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(coordinates))
-
-
     }
 
     fun pingBreweryAPI(searchString: String) {
@@ -134,6 +116,39 @@ class ResultsActivity : AppCompatActivity(), OnMapReadyCallback {
         })
     }
 
+    fun updatePins() {
+        //add pins to Maps
+        mMap.clear()
+        var coordinates = LatLng(41.7659,-72.681)
+        
+        for (brewery in breweryLocations) {
+            //log these lat/lons and see what we got
+            if(brewery.longitude != null) {
+                Log.d(TAG, "updatePins: ${brewery.name} with lon ${brewery.longitude.toDouble()} and lat ${brewery.latitude.toDouble()}")
+                coordinates = LatLng(brewery.latitude.toDouble(), brewery.longitude.toDouble())
+                mMap.addMarker(MarkerOptions().position(coordinates).title("${brewery.name}"))
+            }
+        }
+        //why doesn't test location get added unless there's no other results?
+        mMap.addMarker(MarkerOptions().position(coordinates).title("Test Location"))
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(coordinates))
+    }
+
+    fun searchButton(view: View) {
+        val searchView = findViewById<EditText>(R.id.enter_search)
+        val searchString = searchView.text.toString()
+        searchView.hideKeyboard()
+
+        /*if(searchString.isEmpty())
+            return*/
+
+        pingBreweryAPI(searchString)
+        if(mMap != null)
+            //how do we wait for pingBreweryAPI to finish and update breweryLocations??
+            updatePins()
+        else Log.d(TAG, "searchButton: nMap is null")
+    }
+
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
@@ -145,12 +160,12 @@ class ResultsActivity : AppCompatActivity(), OnMapReadyCallback {
 
         //this of course is happening too soon. no locations returned by API yet
         //if (breweryLocations.isNotEmpty()) {
-            for (brewery in breweryLocations) {
+            /*for (brewery in breweryLocations) {
                 //log these lat/lons and see what we got
                 Log.d(TAG, "onMapReady: ${brewery.name}, Lat=${brewery.latitude}, Lon=${brewery.longitude}")
                 val coordinates = LatLng(brewery.latitude.toDouble(), brewery.longitude.toDouble())
                 mMap.addMarker(MarkerOptions().position(coordinates).title("${brewery.name}"))
-            }
+            }*/
         //}
         //this zoom is not doing anything
         //mMap.moveCamera(CameraUpdateFactory.zoomBy(500.0F))
@@ -207,18 +222,6 @@ class ResultsActivity : AppCompatActivity(), OnMapReadyCallback {
     @SuppressLint("MissingPermission")
     private fun enableUserLocation() {
         mMap.isMyLocationEnabled = true
-    }
-
-    fun searchButton(view: View) {
-        val searchView = findViewById<EditText>(R.id.enter_search)
-        val searchString = searchView.text.toString()
-        searchView.hideKeyboard()
-
-        if(searchString.isEmpty())
-            return
-
-        pingBreweryAPI(searchString)
-        //updatePins()
     }
 
     private fun View.hideKeyboard() {
